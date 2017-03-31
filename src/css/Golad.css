@@ -1,0 +1,28 @@
+:root {
+    --player0-color: rgb(255, 193, 54);
+    --player1-color: rgb(229, 92, 137);
+    --player2-color: rgb(152, 134, 215);
+    --player3-color: rgb(70, 186, 198);
+    --empty-color: rgb(33, 35, 46);
+    --background-color: rgb(15, 19, 25);
+}
+
+.Golad-wrapper {
+    background-color: var(--background-color);
+}
+
+.Cell-color--player0 {
+    fill: var(--player0-color);
+}
+.Cell-color--player1 {
+    fill: var(--player1-color);
+}
+.Cell-color--player2 {
+    fill: var(--player2-color);
+}
+.Cell-color--player3 {
+    fill: var(--player3-color);
+}
+.Cell-color--empty {
+    fill: var(--empty-color);
+}

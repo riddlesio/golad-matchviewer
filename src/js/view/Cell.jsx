@@ -13,10 +13,9 @@ const Cell = createView(function (data) {
     const outerClass = `Cell-outer Cell-color--${getColorClass(current)}`;
     const innerClass = `Cell-inner Cell-color--${getColorClass(next)}`;
 
-    const innerSize = size / 3;
-    const innerDelta = (size - innerSize) / 2;
+    const innerSize = size / 6;
+    const center = size / 2;
     const outerCornerSize = size / 10;
-    const innerCornerSize = size / 15;
 
     return (
         <g className="Cell" transform={ transform }>
@@ -28,12 +27,11 @@ const Cell = createView(function (data) {
                 ry={ outerCornerSize }
                 width={ size - 2 }
                 height={ size - 2 } />
-            { next && <rect
+            { next && <circle
                 className={ innerClass }
-                x={ innerDelta }
-                y={ innerDelta }
-                rx={ innerCornerSize }
-                ry={ innerCornerSize }
+                cx={ center }
+                cy={ center }
+                r={ innerSize }
                 width={ innerSize }
                 height={ innerSize } />
             }

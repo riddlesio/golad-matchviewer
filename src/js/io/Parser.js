@@ -16,12 +16,10 @@ function parseSettings(data, playerData, defaults = {}) {
 
 function parsePlayerNames(playerData) {
 
-    return playerData.map((player) => {
-        return {
-            alias: player.name || '',
-            emailHash: player.emailHash || '',
-        };
-    });
+    return playerData.map((player) => ({
+        alias: player.name || '',
+        emailHash: player.emailHash || '',
+    }));
 }
 
 /**

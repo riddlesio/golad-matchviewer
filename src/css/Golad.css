@@ -7,6 +7,11 @@
     --background-color: rgb(15, 19, 25);
 }
 
+html {
+    font-size: 62.5%;
+    font-family: 'Titillium Web', sans-serif;
+}
+
 .Golad-wrapper {
     background-color: var(--background-color);
 }
@@ -25,4 +30,72 @@
 }
 .Cell-color--empty {
     fill: var(--empty-color);
+}
+
+.PlayerView {
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+}
+.PlayerView--vertical {
+    margin: auto auto auto 80px;
+    flex-direction: column;
+    height: 230px;
+    top: -40px;
+    bottom: 0;
+}
+.PlayerView--horizontal {
+    margin-top: 3px;
+    width: 100%;
+    flex-direction: row;
+}
+
+.player-wrapper {
+    display: flex;
+}
+.player-info {
+    font-size: 1.6rem;
+    line-height: 2.1rem;
+}
+
+.player-avatar-background {
+    width: 41px;
+    height: 41px;
+    border-radius: 50%;
+    background-color: transparent;
+    margin-right: 8px;
+}
+.player-avatar {
+    width: 40px;
+    height: 40px;
+    padding: 1px 0 0 1px;
+    border-radius: 50%;
+    filter: grayscale(100%);
+}
+.player--active .player-avatar {
+    filter: initial;
+}
+.player--active .player-avatar-background.player-color--player0 {
+    background-color: var(--player0-color);
+}
+.player--active .player-avatar-background.player-color--player1 {
+    background-color: var(--player1-color);
+}
+.player--active .player-avatar-background.player-color--player2 {
+    background-color: var(--player2-color);
+}
+.player--active .player-avatar-background.player-color--player3 {
+    background-color: var(--player3-color);
+}
+.player-color--player0 {
+    color: var(--player0-color);
+}
+.player-color--player1 {
+    color: var(--player1-color);
+}
+.player-color--player2 {
+    color: var(--player2-color);
+}
+.player-color--player3 {
+    color: var(--player3-color);
 }

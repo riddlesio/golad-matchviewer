@@ -1,22 +1,17 @@
 import React            from 'react';
 import component        from 'omniscient';
 import { event }        from '@riddles/match-viewer';
+import PlayerView       from './PlayerView.jsx';
 import MaybeEndOverlay  from './MaybeEndOverlay';
 import Cell             from './Cell.jsx';
 
-const gameSpeed = require('../data/gameSpeed.json');
-
 const { PlaybackEvent } = event;
-
-const sliderRange = gameSpeed.min + gameSpeed.max;
-const sliderWidth = gameSpeed.max - gameSpeed.min;
 
 const lifeCycle = {
 
     getInitialState() {
         return {
             isPlaying: true,
-            speed: (sliderWidth / 2) / 1000,
         };
     },
 
@@ -24,7 +19,6 @@ const lifeCycle = {
         PlaybackEvent.on(PlaybackEvent.PLAY, this.setPlaying);
         PlaybackEvent.on(PlaybackEvent.PAUSE, this.setPaused);
         PlaybackEvent.on(PlaybackEvent.PAUSED, this.setPaused);
-        PlaybackEvent.on(PlaybackEvent.CHANGE_SPEED, this.changeSpeed);
     },
 
     setPaused() {
@@ -34,26 +28,25 @@ const lifeCycle = {
     setPlaying() {
         this.setState({ isPlaying: true });
     },
-
-    changeSpeed(rangeValue) {
-        const ms = sliderRange - rangeValue;
-        const speed = ms / 1000;
-
-        this.setState({ speed: speed });
-    },
 };
 
 const GameView = component('GameView', lifeCycle, function ({ state, settings }) {
 
     const { cells, winner } = state;
-    const { isPlaying, speed } = this.state;
-    const playbackClass = isPlaying ? 'is-playing' : 'is-paused';
-    const cellSize = getCellSize(settings);
-    const boardTransform = getBoardTransform(settings, cellSize);
+    const { isPlaying } = this.state;
+    const { cellSize, wider } = getCellSize(settings);
+    const boardTransform = getBoardTransform(settings, cellSize, wider);
     const viewBox = `0 0 ${settings.canvas.width} ${settings.canvas.height}`;
+    const playbackClass = isPlaying ? 'is-playing' : 'is-paused';
 
     return (
         <div className={ `Golad-wrapper ${playbackClass}` }>
+            <PlayerView
+                state={ state }
+                settings={ settings }
+                players={ state.players }
+                boardWidth={ settings.board.width * cellSize }
+                orientation={ getPlayerViewOrientation(settings, cellSize) } />
             <svg className="Golad" viewBox={ viewBox } preserveAspectRatio="xMidYMid meet">
                 <g className="Golad-board Board" transform={ boardTransform }>
                     { cells.map(getCellRenderer(cellSize)) }
@@ -68,18 +61,35 @@ function getCellSize(settings) {
 
     const canvas = settings.canvas;
     const board = settings.board;
+    const sizeHeight = (canvas.height - canvas.marginTop - canvas.marginBottom) / board.height;
+    const sizeWidth = (canvas.width - canvas.marginRight - canvas.marginLeft) / board.width;
 
-    return (canvas.height - canvas.marginTop - canvas.marginBottom) / board.height;
+    if (sizeHeight < sizeWidth) {
+        return { cellSize: sizeHeight, wider: false };
+    }
+
+    return { cellSize: sizeWidth, wider: true };
 }
 
-function getBoardTransform(settings, cellSize) {
+function getBoardTransform(settings, cellSize, wider) {
 
-    const boardWidth = settings.board.width * cellSize;
+    const board = settings.board;
     const canvas = settings.canvas;
+    const boardWidth = board.width * cellSize;
+    const boardHeight = board.height * cellSize;
     const x = canvas.width - canvas.marginRight - boardWidth;
-    const y = canvas.marginTop;
+    const y = wider ? (canvas.height - canvas.marginBottom - boardHeight) / 2 : canvas.marginTop;
 
     return `translate(${x}, ${y})`;
+}
+
+function getPlayerViewOrientation(settings, cellSize) {
+
+    const canvas = settings.canvas;
+    const maxBoardWidth = canvas.width - canvas.marginRight - canvas.marginLeft;
+    const boardWidth = settings.board.width * cellSize;
+
+    return boardWidth / maxBoardWidth < 0.7 ? 'vertical' : 'horizontal';
 }
 
 function getCellRenderer(cellSize) {

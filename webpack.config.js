@@ -40,6 +40,11 @@ module.exports = function (config) {
                     test: /\.json$/,
                     loader: 'json',
                 },
+                {
+                    // https://github.com/webpack-contrib/svg-inline-loader
+                    test: /\.svg$/,
+                    loader: 'svg-inline-loader?classPrefix',
+                },
             ],
 
             // fixes npm install problem (https://github.com/isagalaev/highlight.js/issues/895)

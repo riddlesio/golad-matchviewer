@@ -3,44 +3,52 @@ import createView from 'omniscient';
 
 const PlayerView = createView(function (data) {
 
-    const { state, settings, players, orientation } = data;
-    const composedPlayers = players.map(player => ({
+    const { state, settings } = data;
+    const composedPlayers = state.players.map(player => ({
         ...player,
         ...settings.players[player.id],
     }));
-    const activePlayers = state.players.filter(player => player.move);
+    const activePlayersIds = state.players
+        .filter(player => player.moving)
+        .map(player => player.id);
 
-    return (<div className={ `PlayerView PlayerView--${orientation}` } >
-        { composedPlayers.map(getPlayerRenderer(activePlayers)) }
-    </div>);
+    return <div className='Playerview'>
+        { composedPlayers.map(getPlayerRenderer(activePlayersIds)) }
+    </div>;
 });
 
-function getPlayerRenderer(activePlayers) {
+function getPlayerRenderer(activePlayersIds) {
 
     return function renderPlayer(player, index) {
 
-        const defaultImage = `/img/avatar-solo-50x50.png`;
-        const defaultHref = encodeURIComponent(`https://riddles.io${defaultImage}`);
-        const playerColorClass = `player-color--player${player.id}`;
-        const isActive = activePlayers.some(activePlayer => activePlayer.id === player.id);
+        const defaultHref = encodeURIComponent(
+            'https://storage.googleapis.com/riddles-images/riddles-avatar-solo-47.png');
+        const playerColorClass = ` player--player${player.id}`;
+        const isActive = activePlayersIds.some(id => id === player.id);
         const activeClass = isActive ? ' player--active' : '';
 
-        return <div key={ `Player-${index}` } className={ `player-wrapper${activeClass}` }>
-            <div className={ `player-avatar-background ${playerColorClass}` } >
+        return <div
+            key={ `Player-${index}` }
+            className={ `player-wrapper${playerColorClass}${activeClass}` }>
+            <div className={ `player-avatar-wrapper` } >
                 <img
                     className="player-avatar"
-                    src={ `https://www.gravatar.com/avatar/${player.emailHash}?d=${defaultHref}&s=42` }
+                    src={ `https://www.gravatar.com/avatar/${player.emailHash}?d=${defaultHref}&s=55` }
                     alt="avatar"/>
+                <div className="player-avatar-frame" />
+                <div className="player-avatar-frame-preload0" />
+                <div className="player-avatar-frame-preload1" />
             </div>
-            <div className={ `player-info ${playerColorClass}` }>
+            <div className="player-info">
                 <div className="player-name">
                     { player.alias }
                 </div>
                 <div className="player-score">
-                    { player.score }
+                    <div className="player-score-icon" />
+                    <span>{ player.score }</span>
                 </div>
             </div>
-        </div>
+        </div>;
     };
 }
 

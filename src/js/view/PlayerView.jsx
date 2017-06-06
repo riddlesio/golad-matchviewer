@@ -9,7 +9,7 @@ const PlayerView = createView(function (data) {
         ...settings.players[player.id],
     }));
     const activePlayersIds = state.players
-        .filter(player => player.moving)
+        .filter(player => player.move)
         .map(player => player.id);
 
     return <div className='Playerview'>
@@ -40,7 +40,7 @@ function getPlayerRenderer(activePlayersIds) {
                 <div className="player-avatar-frame-preload1" />
             </div>
             <div className="player-info">
-                <div className="player-name">
+                <div className="player-name u-text-shadow">
                     { player.alias }
                 </div>
                 <div className="player-score">

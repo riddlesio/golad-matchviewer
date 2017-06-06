@@ -5,13 +5,18 @@ import PlayerView       from './PlayerView.jsx';
 import MaybeEndOverlay  from './MaybeEndOverlay';
 import Cell             from './Cell.jsx';
 
+const gameSpeed = require('../data/gameSpeed.json');
 const { PlaybackEvent } = event;
+
+const sliderRange = gameSpeed.min + gameSpeed.max;
+const sliderWidth = gameSpeed.max - gameSpeed.min;
 
 const lifeCycle = {
 
     getInitialState() {
         return {
             isPlaying: true,
+            speed: (sliderWidth / 2) / 1000,
         };
     },
 
@@ -19,6 +24,7 @@ const lifeCycle = {
         PlaybackEvent.on(PlaybackEvent.PLAY, this.setPlaying);
         PlaybackEvent.on(PlaybackEvent.PAUSE, this.setPaused);
         PlaybackEvent.on(PlaybackEvent.PAUSED, this.setPaused);
+        PlaybackEvent.on(PlaybackEvent.CHANGE_SPEED, this.changeSpeed);
     },
 
     setPaused() {
@@ -28,16 +34,23 @@ const lifeCycle = {
     setPlaying() {
         this.setState({ isPlaying: true });
     },
+
+    changeSpeed(rangeValue) {
+        const ms = sliderRange - rangeValue;
+        const speed = ms / 1000;
+
+        this.setState({ speed: speed });
+    },
 };
 
-const GameView = component('GameView', lifeCycle, function ({ state, settings }) {
+const GameView = component('GameView', lifeCycle, function ({ state, settings, isLastState }) {
 
-    const { cells, winner, round, players } = state;
-    const { isPlaying } = this.state;
+    const { cells, winner, round, type } = state;
+    const { isPlaying, speed } = this.state;
     const { boardStyle, canvas, brokenNumbers } = settings;
     const { cellMargin, boardWidth, cellSize } = boardStyle;
     const { paddingTop, paddingRight, paddingBottom, paddingLeft } = canvas;
-    const playbackClass = isPlaying ? 'is-playing' : 'is-paused';
+    const doAnimation = isPlaying && !isLastState;
     const padding = {
         paddingTop,
         paddingRight,
@@ -46,7 +59,7 @@ const GameView = component('GameView', lifeCycle, function ({ state, settings })
     };
 
     return (
-        <div className={ `Golad-wrapper ${playbackClass}` } style={ padding }>
+        <div className={ 'Golad-wrapper' } style={ padding }>
             <div className="Golad">
                 <div className="ui-wrapper">
                     <div className="Golad-round">
@@ -56,16 +69,19 @@ const GameView = component('GameView', lifeCycle, function ({ state, settings })
                 </div>
                 <div className="Golad-board-wrapper" style={{ width: `${boardWidth}%` }}>
                     <div className="Golad-board Board">
-                        { cells.map(getCellRenderer(cellSize, cellMargin, brokenNumbers, players)) }
+                        { cells.map(getCellRenderer(
+                            cellSize, cellMargin, brokenNumbers, type, speed, doAnimation)) }
                     </div>
                 </div>
             </div>
             <MaybeEndOverlay winner={ winner } />
+            <div className="end-screen-overlay-preload" />
+            <div className="end-screen-image-preload" />
         </div>
     );
 });
 
-function getCellRenderer(cellSize, cellMargin, brokenNumbers, players) {
+function getCellRenderer(cellSize, cellMargin, brokenNumbers, type, speed, doAnimation) {
 
     return function renderCell(cell) {
 
@@ -73,8 +89,10 @@ function getCellRenderer(cellSize, cellMargin, brokenNumbers, players) {
             key={ `GoladCell-${cell.x}-${cell.y}` }
             size={ cellSize }
             cellMargin={ cellMargin }
-            players={ players }
             brokenNumbers={ brokenNumbers }
+            speed={ speed }
+            doAnimation={ doAnimation }
+            stateType={ type }
             { ...cell }
         />;
     };

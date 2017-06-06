@@ -8,9 +8,14 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
+:root {
+    --player0-color: #963A4C;
+    --player1-color: #4469AF;
+}
+
 html {
     font-size: 62.5%;
-    font-family: 'Titillium Web', sans-serif;
+    font-family: 'Inknut Antiqua', sans-serif;
 }
 
 .GamePlayer {
@@ -59,51 +64,64 @@ html {
     height: 100%;
     background: no-repeat center;
     background-size: cover;
-}
-.cell-current--player0.cell-next--player0 {
-    background-image: url('../img/stone-red-whole.svg');
-}
-.cell-current--player1.cell-next--player1 {
-    background-image: url('../img/stone-blue-whole.svg');
-}
-.cell-current--empty.cell-next--player0 {
-    background-image: url('../img/stone-red-small.svg');
-}
-.cell-current--empty.cell-next--player1 {
-    background-image: url('../img/stone-blue-small.svg');
-}
-.cell-current--player0.cell-next--empty.cell-broken--type1 {
-    background-image: url('../img/stone-red-broken1.svg');
-}
-.cell-current--player0.cell-next--empty.cell-broken--type2 {
-    background-image: url('../img/stone-red-broken2.svg');
-}
-.cell-current--player0.cell-next--empty.cell-broken--type3 {
-    background-image: url('../img/stone-red-broken3.svg');
-}
-.cell-current--player1.cell-next--empty.cell-broken--type1 {
-    background-image: url('../img/stone-blue-broken1.svg');
-}
-.cell-current--player1.cell-next--empty.cell-broken--type2 {
-    background-image: url('../img/stone-blue-broken2.svg');
-}
-.cell-current--player1.cell-next--empty.cell-broken--type3 {
-    background-image: url('../img/stone-blue-broken3.svg');
-}
-.Cell.cell-current--empty.cell-next--player0,
-.Cell.cell-current--empty.cell-next--player1 {
     top: 0;
     right: 0;
     left: 0;
     bottom: 0;
     margin: auto;
+}
+.Cell-small {
     width: 45%;
     height: 45%;
 }
-.Cell.cell-selected--player0 {
+.Cell-whole.Cell--player0,
+.Cell-small.Cell--player0,
+.Cell-empty.start-disappear--player0 {
+    background-image: url('../img/stone-red-whole.svg');
+}
+.Cell-whole.Cell--player1,
+.Cell-small.Cell--player1,
+.Cell-empty.start-disappear--player1 {
+    background-image: url('../img/stone-blue-whole.svg');
+}
+.Cell-broken1.Cell--player0,
+.Cell-empty.start-disappear1--player0,
+.Cell-small.start-disappear1--player0 {
+    background-image: url('../img/stone-red-broken1.svg');
+}
+.Cell-broken2.Cell--player0,
+.Cell-empty.start-disappear2--player0,
+.Cell-small.start-disappear2--player0 {
+    background-image: url('../img/stone-red-broken2.svg');
+}
+.Cell-broken3.Cell--player0,
+.Cell-empty.start-disappear3--player0,
+.Cell-small.start-disappear3--player0 {
+    background-image: url('../img/stone-red-broken3.svg');
+}
+.Cell-broken1.Cell--player1,
+.Cell-empty.start-disappear1--player1,
+.Cell-small.start-disappear1--player1  {
+    background-image: url('../img/stone-blue-broken1.svg');
+}
+.Cell-broken2.Cell--player1,
+.Cell-empty.start-disappear2--player1,
+.Cell-small.start-disappear2--player1   {
+    background-image: url('../img/stone-blue-broken2.svg');
+}
+.Cell-broken3.Cell--player1,
+.Cell-empty.start-disappear3--player1,
+.Cell-small.start-disappear3--player1  {
+    background-image: url('../img/stone-blue-broken3.svg');
+}
+
+.Cell-select {
+    opacity: 1;
+}
+.Cell-select.Cell--player0 {
     background-image: url('../img/cell-red-selected.svg');
 }
-.Cell.cell-selected--player1 {
+.Cell-select.Cell--player1 {
     background-image: url('../img/cell-blue-selected.svg');
 }
 
@@ -122,7 +140,6 @@ html {
     text-align: center;
 }
 .Golad-round-text {
-    font-family: 'Inknut Antiqua', sans-serif;
     color: #97868A;
     font-size: 2.0rem;
     line-height: 4.2rem;
@@ -139,7 +156,6 @@ html {
     display: flex;
 }
 .player-avatar-wrapper {
-    height: 100%;
     width: 115px;
 }
 .player-avatar {
@@ -161,7 +177,6 @@ html {
     background-image: url(../img/avatar-frame-blue.svg);
 }
 .player-info {
-    font-family: 'Inknut Antiqua', sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -171,12 +186,10 @@ html {
     line-height: 3.5rem;
 }
 .player--player0 .player-name {
-    color: #963A4C;
-    text-shadow: #322838 1px 2px;
+    color: var(--player0-color);
 }
 .player--player1 .player-name {
-    color: #4469AF;
-    text-shadow: #322838 1px 2px;
+    color: var(--player1-color);
 }
 .player-score {
     font-size: 1.5rem;
@@ -190,10 +203,66 @@ html {
     margin: 2px 6px 0 0;
 }
 .player--player0 .player-score-icon {
-    background: url(../img/stone-red-small.svg) no-repeat 50%;
+    background: url(../img/stone-red-whole.svg) no-repeat 50%;
 }
 .player--player1 .player-score-icon {
-    background: url(../img/stone-blue-small.svg) no-repeat 50%;
+    background: url(../img/stone-blue-whole.svg) no-repeat 50%;
+}
+.Golad-overlay {
+    position: absolute;
+    background: url(../img/end-screen-overlay.svg) no-repeat 50%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.Golad-overlay-foreground {
+    position: absolute;
+    background: url(../img/end-screen-image.svg) no-repeat 50%;
+    height: 730px;
+    width: 500px;
+    transform: translateY(-100%);
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+.Golad-overlay-foreground .player-avatar-wrapper {
+    position: absolute;
+    top: 78%;
+    left: 8%;
+}
+.Golad-overlay-foreground .player-avatar {
+    width: 65px;
+    left: 42px;
+    top: 35px;
+}
+.Golad-overlay-foreground .player-avatar-frame {
+    width: 150px;
+    height: 110px;
+}
+
+.winner-message {
+    position: absolute;
+    top: 82%;
+    left: 36%;
+    font-size: 2.3rem;
+    line-height: 3.5rem;
+    max-width: 280px;
+}
+.winner--none {
+    color: #97868A;
+}
+.winner--0 .winner-message {
+    color: var(--player0-color);
+}
+.winner--1 .winner-message {
+    color: var(--player1-color);
+}
+
+.u-text-shadow {
+    text-shadow: #322838 1px 2px;
 }
 
 /*preload some images*/
@@ -202,4 +271,10 @@ html {
 }
 .player-avatar-frame-preload1 {
     background: url(../img/avatar-frame-blue.svg) no-repeat -9999px -9999px;
+}
+.end-screen-overlay-preload {
+    background: url(../img/end-screen-overlay.svg) no-repeat -9999px -9999px;
+}
+.end-screen-image-preload {
+    background: url(../img/end-screen-image.svg) no-repeat -9999px -9999px;
 }

@@ -51,8 +51,6 @@ const MatchViewer = createGame({
         const settings          = parseSettings(matchData, playerData, defaults);
         const states            = parseStates(matchData, settings);
 
-        console.log('states', states);
-
         this.settings = settings;
         this.states = states;
 
@@ -83,6 +81,7 @@ const MatchViewer = createGame({
         const props = {
             settings,
             state: states[currentState],
+            isLastState: currentState === states.length - 1,
         };
 
         ReactDOM.render(<GameView { ...props }/>, this.getDOMNode());

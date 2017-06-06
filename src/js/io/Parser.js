@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import CellType from '../enum/CellType';
 
 /**
  * Parses the passed data object into settings which are usable by the viewer
@@ -75,40 +76,67 @@ function parseStates(data, settings) {
 
     data.states.forEach(state => {
         const { round, players, board } = state;
+        const previousParsedState = parsedStates[parsedStates.length - 1];
+        const previousCells = previousParsedState ? previousParsedState.cells : null;
+        const selectedCells = getSelectedCells(players);
         const parsedState = {
             round,
             players,
             winner: undefined,
-            cells: parseBoard(board, data.settings),
+            cells: parseBoard(board, previousCells, selectedCells, data.settings),
+            type: 'lifecycle',
         };
 
-        if (parsedState.players.some(player => player.move)) {  // split move state in 2
-            const previousState = parsedStates[parsedStates.length - 1];
-
-            const moveState = _.cloneDeep(previousState);
-            moveState.round = parsedState.round;
-            moveState.players.forEach((player, index) => {
-                const move = parsedState.players[index].move;
-                player.move = move;
-                player.moving = !!move;
-            });
-
-            parsedState.players.forEach(player => {
-                player.moving = !!player.move;
-                player.move = null;
-            });
-
-            parsedStates.push(moveState);
-            parsedStates.push(parsedState);
-        } else {
-            parsedStates.push(parsedState);
-        }
+        parsedStates.push.apply(parsedStates, splitState(parsedState, previousParsedState));
     });
 
     return addFinalState(parsedStates, data.winner, settings.players);
 }
 
-function parseBoard(input, settings) {
+function getSelectedCells(players) {
+    const selectedCells = {};
+
+    players.forEach(player =>  {
+        const { move, id } = player;
+
+        if (move) {
+            const { sacrificeCells, birthCell, killCell } = move;
+
+            sacrificeCells && sacrificeCells.forEach(cell => {
+                selectedCells[getCellIndex(cell.x, cell.y)] = id;
+            });
+
+            if (birthCell) {
+                selectedCells[getCellIndex(birthCell.x, birthCell.y)] = id;
+            }
+
+            if (killCell) {
+                selectedCells[getCellIndex(killCell.x, killCell.y)] = id;
+            }
+        }
+    });
+
+    return selectedCells;
+}
+
+function splitState(parsedState, previousState) {
+    if (!parsedState.players.some(player => player.move)) {
+        return [parsedState];
+    }
+
+    const selectState = _.cloneDeep(previousState);
+    selectState.round = parsedState.round;
+    selectState.type = 'select';
+    selectState.cells.forEach((cell, index) => {
+        cell.selected = parsedState.cells[index].selected;
+    });
+
+    parsedState.type = 'move';
+
+    return [selectState, parsedState];
+}
+
+function parseBoard(input, previousCells, selectedCells, settings) {
 
     const { width } = settings.board;
 
@@ -116,14 +144,36 @@ function parseBoard(input, settings) {
         const x = index % width;
         const y = Math.floor(index / width);
         const split = cell.split('>');
+        const current = split[0];
+        const next = split.length > 1 ? split[1] : current;
+        const selected = selectedCells[getCellIndex(x, y)];
 
         return {
             x,
             y,
-            current: split[0],
-            next: split.length > 1 ? split[1] : split[0],
+            selected: selected !== undefined ? selected : null,
+            color: current !== '.' ? current : next,
+            type: getCellType(current, next),
+            previousType: previousCells ? previousCells[index].type : null,
+            previousColor: previousCells ? previousCells[index].color : null,
         };
     });
+}
+
+function getCellType(current, next) {
+    if (current === '.' && next === '.') {
+        return CellType.EMPTY;
+    } else if (current === '.' && next !== '.') {
+        return CellType.SMALL;
+    } else if (current !== '.' && next === '.') {
+        return CellType.BROKEN;
+    } else {
+        return CellType.WHOLE;
+    }
+}
+
+function getCellIndex(x, y) {
+    return `${x},${y}`;
 }
 
 function addFinalState(states, winnerId, players) {

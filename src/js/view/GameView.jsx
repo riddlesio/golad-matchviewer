@@ -47,7 +47,7 @@ const GameView = component('GameView', lifeCycle, function ({ state, settings, i
 
     const { cells, winner, round, type } = state;
     const { isPlaying, speed } = this.state;
-    const { boardStyle, canvas, brokenNumbers } = settings;
+    const { boardStyle, canvas, brokenNumbers, noLifeCycleAnimation } = settings;
     const { cellMargin, boardWidth, cellSize } = boardStyle;
     const { paddingTop, paddingRight, paddingBottom, paddingLeft } = canvas;
     const doAnimation = isPlaying && !isLastState;
@@ -69,8 +69,8 @@ const GameView = component('GameView', lifeCycle, function ({ state, settings, i
                 </div>
                 <div className="Golad-board-wrapper" style={{ width: `${boardWidth}%` }}>
                     <div className="Golad-board Board">
-                        { cells.map(getCellRenderer(
-                            cellSize, cellMargin, brokenNumbers, type, speed, doAnimation)) }
+                        { cells.map(getCellRenderer(cellSize, cellMargin, brokenNumbers,
+                            type, speed, doAnimation, noLifeCycleAnimation)) }
                     </div>
                 </div>
             </div>
@@ -81,7 +81,7 @@ const GameView = component('GameView', lifeCycle, function ({ state, settings, i
     );
 });
 
-function getCellRenderer(cellSize, cellMargin, brokenNumbers, type, speed, doAnimation) {
+function getCellRenderer(cellSize, cellMargin, brokenNumbers, type, speed, doAnimation, noLifeCycleAnimation) {
 
     return function renderCell(cell) {
 
@@ -92,6 +92,7 @@ function getCellRenderer(cellSize, cellMargin, brokenNumbers, type, speed, doAni
             brokenNumbers={ brokenNumbers }
             speed={ speed }
             doAnimation={ doAnimation }
+            noLifeCycleAnimation={ noLifeCycleAnimation }
             stateType={ type }
             { ...cell }
         />;

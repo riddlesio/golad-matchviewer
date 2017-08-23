@@ -26,6 +26,7 @@ function getPlayerRenderer(activePlayersIds) {
         const playerColorClass = ` player--player${player.id}`;
         const isActive = activePlayersIds.some(id => id === player.id);
         const activeClass = isActive ? ' player--active' : '';
+        const passing = player.move && player.move.moveType === 'pass';
 
         return <div
             key={ `Player-${index}` }
@@ -45,7 +46,8 @@ function getPlayerRenderer(activePlayersIds) {
                 </div>
                 <div className="player-score">
                     <div className="player-score-icon" />
-                    <span>{ player.score }</span>
+                    <span className="player-score-score">{ player.score }</span>
+                    { passing && <span className="player-score-pass">pass</span>}
                 </div>
             </div>
         </div>;

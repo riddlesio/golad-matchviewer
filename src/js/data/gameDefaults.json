@@ -9,5 +9,6 @@
   },
   "boardStyle": {
     "cellMargin": 2
-  }
+  },
+  "noLifeCycleAnimation": true
 }

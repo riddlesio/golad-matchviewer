@@ -54,6 +54,8 @@ const MatchViewer = createGame({
         this.settings = settings;
         this.states = states;
 
+        console.log(states);
+
         this.triggerStateChange(currentState);
         this.play();
     },

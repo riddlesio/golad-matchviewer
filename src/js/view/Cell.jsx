@@ -33,6 +33,7 @@ class Cell extends React.Component {
         const timeline = new TimelineLite();
         const animationSpeed = speed / 3;
 
+        // noinspection FallThroughInSwitchStatementJS
         switch (stateType) {
             case 'select':
                 if (this.select) {
@@ -41,8 +42,14 @@ class Cell extends React.Component {
                 }
 
                 break;
-            case 'move':
             case 'lifecycle':
+                if (this.props.noLifeCycleAnimation) { // Only animate the selections
+                    this.animateRemoveSelect(timeline, animationSpeed);
+                    break;
+                }
+
+                // no break on purpose
+            case 'move':
                 const broken = previousType === CellType.BROKEN ? brokenNumbers[x][y] : '';
                 const animationClass = `start-disappear${broken}--player${previousColor}`;
 

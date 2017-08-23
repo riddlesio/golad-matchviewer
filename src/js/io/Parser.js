@@ -120,7 +120,11 @@ function getSelectedCells(players) {
 }
 
 function splitState(parsedState, previousState) {
-    if (!parsedState.players.some(player => player.move)) {
+    const noMoves = parsedState.players.every(
+        player => player.move === null || player.move.moveType === 'pass'
+    );
+
+    if (noMoves) {
         return [parsedState];
     }
 
@@ -129,6 +133,9 @@ function splitState(parsedState, previousState) {
     selectState.type = 'select';
     selectState.cells.forEach((cell, index) => {
         cell.selected = parsedState.cells[index].selected;
+    });
+    selectState.players.forEach((player, index) => {
+        player.move = parsedState.players[index].move;
     });
 
     parsedState.type = 'move';

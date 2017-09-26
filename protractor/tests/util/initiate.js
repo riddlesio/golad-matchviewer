@@ -10,8 +10,8 @@ describe('Initiate:', function () {
     this.timeout(60000);
 
     before(() => {
-        browser.get('http://booking.test.riddles.io/admin/account/login')
-            .then(() => browser.wait(element(by.className('.GamePlayer')).isPresent()));
+        browser.get('http://localhost:8686')
+            .then(() => browser.wait(element(by.id('player')).isPresent()));
     });
 
     it('Maximizing window', () => {

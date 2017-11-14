@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import cloneDeep from 'lodash/fp/cloneDeep';
 import CellType from '../enum/CellType';
 
 /**
@@ -128,7 +128,7 @@ function splitState(parsedState, previousState) {
         return [parsedState];
     }
 
-    const selectState = _.cloneDeep(previousState);
+    const selectState = cloneDeep(previousState);
     selectState.round = parsedState.round;
     selectState.type = 'select';
     selectState.cells.forEach((cell, index) => {

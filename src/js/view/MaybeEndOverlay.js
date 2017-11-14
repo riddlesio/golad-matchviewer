@@ -22,7 +22,7 @@ class EndOverlay extends React.Component {
                     <img
                         className="player-avatar"
                         src={ 'https://www.gravatar.com/avatar/' +
-                              `${player.emailHash}?d=${defaultHref}&s=65` }
+                              `${winner.emailHash}?d=${defaultHref}&s=65` }
                         alt="avatar"/>
                     <div className="player-avatar-frame"/>
                 </div>

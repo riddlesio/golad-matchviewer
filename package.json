@@ -9,8 +9,9 @@
     "dev-build": "gulp build --debug",
     "start": "npm run dev-build && node server.js",
     "test": "./node_modules/.bin/mocha --reporter spec --compilers  js:babel-register",
-    "protractor": "protractor protractor.conf.js",
-    "start-selenium-local": "./node_modules/.bin/webdriver-manager start"
+    "protractor": "protractor protractor/protractor.conf.js",
+    "start-selenium-local": "node_modules/protractor/bin/webdriver-manager start --versions.chrome=2.32",
+    "update-selenium-local": "node_modules/protractor/bin/webdriver-manager update --versions.chrome=2.32"
   },
   "author": "Jim van Eeden",
   "license": "Apache 2.0",

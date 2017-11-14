@@ -1,5 +1,6 @@
 web
-test/results
+/protractor/screenshots
+protractor/screenshots
 .idea/
 
 ### Linux template
